@@ -20,6 +20,7 @@
 
 #include "Fd.hpp"
 #include "Logging.hpp"
+#include <xxh3.h>
 
 using Logging::log;
 using nonstd::string_view;
@@ -28,7 +29,8 @@ const string_view HASH_DELIMITER("\000cCaChE\000", 8);
 
 Hash::Hash()
 {
-  blake3_hasher_init(&m_hasher);
+  memset(&m_hasher, 0, sizeof(m_hasher));
+  XXH3_128bits_reset(&m_hasher);
 }
 
 void
@@ -47,10 +49,9 @@ Hash::enable_debug(string_view section_name,
 Digest
 Hash::digest() const
 {
-  // Note that blake3_hasher_finalize doesn't modify the hasher itself, thus it
-  // is possible to finalize again after more data has been added.
   Digest digest;
-  blake3_hasher_finalize(&m_hasher, digest.bytes(), digest.size());
+  XXH128_hash_t Hash = XXH3_128bits_digest(&m_hasher);
+  memcpy(digest.bytes(), &Hash, sizeof(Hash));
   return digest;
 }
 
@@ -124,7 +125,8 @@ Hash::hash_file(const std::string& path)
 void
 Hash::hash_buffer(string_view buffer)
 {
-  blake3_hasher_update(&m_hasher, buffer.data(), buffer.size());
+  XXH3_128bits_update (&m_hasher, buffer.data(), buffer.size());
+
   if (!buffer.empty() && m_debug_binary) {
     (void)fwrite(buffer.data(), 1, buffer.size(), m_debug_binary);
   }

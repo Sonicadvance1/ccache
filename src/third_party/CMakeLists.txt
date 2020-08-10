@@ -1,4 +1,4 @@
-add_library(third_party_lib STATIC format.cpp getopt_long.c xxhash.c)
+add_library(third_party_lib STATIC format.cpp getopt_long.c)
 if(ENABLE_TRACING)
   target_sources(third_party_lib PRIVATE minitrace.c)
 endif()

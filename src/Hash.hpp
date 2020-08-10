@@ -22,8 +22,7 @@
 
 #include "Digest.hpp"
 
-#include "third_party/blake3/blake3.h"
-#include "third_party/nonstd/string_view.hpp"
+#include <xxh3.h>
 
 // This class represents a hash state.
 class Hash
@@ -96,7 +95,7 @@ public:
   bool hash_file(const std::string& path);
 
 private:
-  blake3_hasher m_hasher;
+  XXH3_state_t m_hasher;
   FILE* m_debug_binary = nullptr;
   FILE* m_debug_text = nullptr;
 

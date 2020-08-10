@@ -54,14 +54,14 @@ namespace {
 // Note: The key is hashed using the main hash algorithm, so the version number
 // does not need to be incremented if said algorithm is changed (except if the
 // digest size changes since that affects the entry format).
-const uint32_t k_version = 1;
+const uint32_t k_version = 2;
 
 // Note: Increment the version number if constants affecting storage size are
 // changed.
 const uint32_t k_num_buckets = 32 * 1024;
 const uint32_t k_num_entries = 4;
 
-static_assert(Digest::size() == 20,
+static_assert(Digest::size() == 16,
               "Increment version number if size of digest is changed.");
 static_assert(IS_TRIVIALLY_COPYABLE(Digest),
               "Digest is expected to be trivially copyable.");
